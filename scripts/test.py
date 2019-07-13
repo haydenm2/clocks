@@ -1,6 +1,7 @@
 from alarm import Alarm
 from clock import Clock
 from timer import Timer
+from stopwatch import Stopwatch
 
 # # ALARM TESTS
 # al = Alarm()
@@ -17,11 +18,17 @@ from timer import Timer
 # cl.Check()
 # cl.Close()
 
-# TIMER TESTS
-tmr = Timer()
-tmr.SetName('TestTimer')
-tmr.SetLength([0,0,5,0])
-tmr.Start()
-tmr.Execute()
+# # TIMER TESTS
+# tmr = Timer()
+# tmr.SetName('TestTimer')
+# tmr.SetLength([0,0,5,0])
+# tmr.Start()
+# tmr.Execute()
+
+# STOPWATCH TESTS
+sw = Stopwatch()
+sw.SetName('TestStopwatch')
+sw.Play()
+sw.Execute()
 
 print('TEST COMPLETE!')

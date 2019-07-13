@@ -3,8 +3,6 @@
 import sys
 from datetime import time, datetime
 import time as t
-import curses
-import os
 
 class Timer:
     # Initialization function
