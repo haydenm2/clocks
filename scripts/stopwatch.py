@@ -19,7 +19,7 @@ class Stopwatch:
         self.cDest = False #destructor command flag
         self.cLap = False #lap command flag
         self.Show = True #show timer output flag
-        self.LapCount = 1 #Lap iterator
+        self.ShowInt = 0.05 #display interval
 
     #Setter Functions
     def SetName(self,name):
@@ -46,8 +46,8 @@ class Stopwatch:
         self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
         self.Elapsed = self.SubTime(self.Time,self.Start)
 
-    def Print(self,Name,Elapsed):
-            print('[',Name,']: ',Elapsed[0],':',Elapsed[1],':',Elapsed[2],':',Elapsed[3],end='\r')
+    def Print(self,Name,Time):
+            print('[',Name,']: ',Time[0],':',Time[1],':',Time[2],':',Time[3],end='\r')
             sys.stdout.flush()
 
     def CheckFlags(self):
@@ -63,7 +63,7 @@ class Stopwatch:
         if(self.cReset):
             self.Reset()
             self.cReset = False
-        t.sleep(0.05)
+        t.sleep(self.ShowInt)
 
     def SubTime(self,Time1,Time2):
         Sub = [Time1[0]-Time2[0],Time1[1]-Time2[1],Time1[2]-Time2[2],Time1[3]-Time2[3]]
@@ -71,10 +71,10 @@ class Stopwatch:
             Sub[2]-=1
             Sub[3]+=1000000
         if(Sub[2]<0):
-            Sub[1]-=+(Sub[2]//60)+1
+            Sub[1]-=(1+(Sub[2]//60))
             Sub[2]+=60*(1+(Sub[2]//60))
         if(Sub[1]<0):
-            Sub[0]-=+(Sub[1]//60)+1
+            Sub[0]-=(1+(Sub[1]//60))
             Sub[1]+=60*(1+(Sub[1]//60))
         if(Sub[0]<0):
             Sub=[0,0,0,0]

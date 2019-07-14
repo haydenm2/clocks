@@ -19,6 +19,7 @@ class Timer:
         self.cStart = True #start command flag
         self.cDest = False #destructor command flag
         self.Show = True #show timer output flag
+        self.ShowInt = 0.05 #display interval
 
     #Setter Functions
     def SetName(self,name):
@@ -58,7 +59,7 @@ class Timer:
         if(self.cStart):
             self.Start()
             self.cStart = False
-        t.sleep(0.05)
+        t.sleep(self.ShowInt)
 
     def CalcFinish(self):
         self.Finish = [self.Time[0]+self.Length[0],self.Time[1]+self.Length[1],self.Time[2]+self.Length[2],self.Time[3]+self.Length[3]]

@@ -49,15 +49,11 @@ class Clock:
         else:
             title = '24HR'
 
-        print('Time Changed to ',title)
-
-    # Close
-    def Close(self):
-        print('[',self.Name,']: ','Deleting Clock')
-        return
+        print('Time Changed to ',title) 
     
     # Destructor
     def __del__(self):
+        print('[',self.Name,']: ','Deleting Clock')
         return
     
     
