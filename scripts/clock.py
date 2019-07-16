@@ -3,57 +3,93 @@
 import sys
 from datetime import time, datetime
 import time as t
-import curses
-import os
 
 class Clock:
     # Initialization function
     def __init__(self):
         self.Name = 'Clock' #clock name
-        self.Time = [0,0,0,0] #[hour,minute,second,microseconds]
-        self.AMPM = True
-        self.AM = 'AM'
+        self.On = False #state of clock object
+        self.Time = [0,0,0,0] #[hour,minute,second,microseconds] current time
+        self.cReset = False #reset command flag
+        self.cStart = True #start command flag
+        self.cDest = False #destructor command flag
+        self.Show = True #show output flag
+        self.ShowInt = 0.05 #display interval
+        self.preprintmsg = ""
+        self.endmsg = "Subtraction Error!"
+        self.killmsg = "Deleting Clock"
 
-    # PrintTime
-    def PrintTime(self,Title,Time,hold):
-        if(hold):
-            if(self.AMPM):
-                print('[',Title,']: ',Time[0],':',Time[1],':',Time[2],':',Time[3],self.AM,end='\r')
-                sys.stdout.flush()
-                t.sleep(0.005)
-            else:
-                print('[',Title,']: ',Time[0],':',Time[1],':',Time[2],':',Time[3],end='\r')
-                sys.stdout.flush()
-                t.sleep(0.005)
+    #Setter Functions
+    def SetName(self,name):
+        self.Name = name
+
+    def SetShow(self):
+        if(not(self.Show)):
+            self.Show = True
         else:
-            if(self.AMPM):
-                print('[',Title,']: ',Time[0],':',Time[1],':',Time[2],':',Time[3],self.AM)
-            else:
-                print('[',Title,']: ',Time[0],':',Time[1],':',Time[2],':',Time[3])
-        
-    # Check
-    def Check(self,hold=False):
-        execute = True
-        while(hold or execute):
-            self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
-            if(self.Time[0]>12 and self.AMPM):
-                self.Time[0] -= 12
-                self.AM = 'PM'
-            self.PrintTime(self.Name,self.Time,hold)
-            execute = False
-
-    def Set12or24(self):
-        self.AMPM = not(self.AMPM)
-        if(self.AMPM):
-            title = '12HR'
-        else:
-            title = '24HR'
-
-        print('Time Changed to ',title) 
+            self.Show = False
     
-    # Destructor
+    def SetValue(self,Value):
+        pass
+
+    #Execution Functions
+    def Execute(self):
+        while(not(self.cDest)):
+            if(self.On):
+                self.CheckFlags()
+                if(self.Show):
+                    self.Print(self.preprintmsg+self.Name,self.Time)
+                self.Update()
+            else:
+                self.CheckFlags()
+
+    def Update(self):
+        self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
+
+    def Print(self,Name,Time):
+        print('\033[1m\033[92m','[',Name,']: ','\033[0m',Time[0],':',Time[1],':',Time[2],':',Time[3],end='\r')
+        sys.stdout.flush()
+
+    def CheckFlags(self):
+        if(self.cReset):
+            self.Reset()
+            self.cReset = False
+        if(self.cStart):
+            self.Activate()
+            self.cStart = False
+        t.sleep(self.ShowInt)
+
+    #For Changing Time Zones  
+    def SubTime(self,Time1,Time2):
+        Sub = [Time1[0]-Time2[0],Time1[1]-Time2[1],Time1[2]-Time2[2],Time1[3]-Time2[3]]
+        if(Sub[3]<0):
+            Sub[2]-=1
+            Sub[3]+=1000000
+        if(Sub[2]<0):
+            Sub[1]-=(2+(Sub[2]//60))
+            Sub[2]+=60*(2+(Sub[2]//60))
+        if(Sub[1]<0):
+            Sub[0]-=(2+(Sub[1]//60))
+            Sub[1]+=60*(2+(Sub[1]//60))
+        if(Sub[0]<0):
+            Sub=[0,0,0,0]
+            print('\n\033[1m\033[94m','[',self.Name,']: ',self.endmsg,'\033[0m')
+            self.On = False
+        return Sub
+
+    def Activate(self):
+        self.On = True
+        self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
+
+    def Reset(self):
+        self.Name = 'Clock'
+        self.On = False #state of clock object
+        self.cReset = False #reset command flag
+        self.cStart = True #start command flag
+        self.Show = True #show output flag
+
     def __del__(self):
-        print('[',self.Name,']: ','Deleting Clock')
+        print('\n\033[1m\033[91m','[',self.Name,']: ',self.killmsg,'\033[0m')
         return
     
     

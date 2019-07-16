@@ -9,7 +9,6 @@ class Timer:
     def __init__(self):
         self.Name = 'Timer' #timer name
         self.On = False #state of timer object
-        self.Complete = False #completion state
         self.Time = [0,0,0,0] #[hour,minute,second,microseconds] current time
         self.Diff = [0,0,0,0] #[hour,minute,second,microseconds] time until finish
         self.Finish = [0,0,0,0] #[hour,minute,second,microseconds] time of finish
@@ -20,13 +19,22 @@ class Timer:
         self.cDest = False #destructor command flag
         self.Show = True #show timer output flag
         self.ShowInt = 0.05 #display interval
+        self.preprintmsg = ""
+        self.endmsg = "Timer Passed"
+        self.killmsg = "Deleting Timer"
 
     #Setter Functions
     def SetName(self,name):
         self.Name = name
+
+    def SetShow(self):
+        if(not(self.Show)):
+            self.Show = True
+        else:
+            self.Show = False
     
-    def SetLength(self,length):
-        self.Length = length
+    def SetValue(self,Value):
+        self.Length = Value
 
     #Execution Functions
     def Execute(self):
@@ -34,20 +42,18 @@ class Timer:
             if(self.On):
                 self.CheckFlags()
                 if(self.Show):
-                    self.PrintTime()
+                    self.Print(self.preprintmsg+self.Name,self.Diff)
                 self.Update()
             else:
                 self.CheckFlags()
-        else:
-            return
             
     def Update(self):
         self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
-        self.TimeTo()
+        self.Diff = self.SubTime(self.Finish,self.Time)
 
-    def PrintTime(self):
-            print('[',self.Name,']: ',self.Diff[0],':',self.Diff[1],':',self.Diff[2],':',self.Diff[3],end='\r')
-            sys.stdout.flush()
+    def Print(self,Name,Time):
+        print('\033[1m\033[92m','[',Name,']: ','\033[0m',Time[0],':',Time[1],':',Time[2],':',Time[3],end='\r')
+        sys.stdout.flush()
 
     def CheckFlags(self):
         if(self.cPause):
@@ -57,66 +63,65 @@ class Timer:
             self.Reset()
             self.cReset = False
         if(self.cStart):
-            self.Start()
+            self.Activate()
             self.cStart = False
         t.sleep(self.ShowInt)
 
-    def CalcFinish(self):
-        self.Finish = [self.Time[0]+self.Length[0],self.Time[1]+self.Length[1],self.Time[2]+self.Length[2],self.Time[3]+self.Length[3]]
-        if(self.Finish[3]>1000000):
-            self.Finish[3]=self.Finish[3]%1000000
-            self.Finish[2]=self.Finish[2]+(self.Finish[3]//1000000)
-        if(self.Finish[2]>60):
-            self.Finish[2]=self.Finish[2]%60
-            self.Finish[1]=self.Finish[1]+(self.Finish[1]//60)
-        if(self.Finish[1]>60):
-            self.Finish[1]=self.Finish[1]%60
-            self.Finish[0]=self.Finish[0]+(self.Finish[0]//60)
-        if(self.Finish[0]>24):
-            self.Finish[0]=self.Finish[0]%24
-        return
-
-    def TimeTo(self):
-        self.Diff = [self.Finish[0]-self.Time[0],self.Finish[1]-self.Time[1],self.Finish[2]-self.Time[2],self.Finish[3]-self.Time[3]]
-        while(self.Diff[3]<0):
-            self.Diff[2]-=1
-            self.Diff[3]+=1000000
-        while(self.Diff[2]<0):
-            self.Diff[1]-=1
-            self.Diff[2]+=60
-        while(self.Diff[1]<0):
-            self.Diff[0]-=1
-            self.Diff[1]+=60
-        if(self.Diff[0]<0):
-            self.Diff = [0,0,0,0]
-            self.Complete = True
+    def SubTime(self,Time1,Time2):
+        Sub = [Time1[0]-Time2[0],Time1[1]-Time2[1],Time1[2]-Time2[2],Time1[3]-Time2[3]]
+        if(Sub[3]<0):
+            Sub[2]-=1
+            Sub[3]+=1000000
+        if(Sub[2]<0):
+            Sub[1]-=(2+(Sub[2]//60))
+            Sub[2]+=60*(2+(Sub[2]//60))
+        if(Sub[1]<0):
+            Sub[0]-=(2+(Sub[1]//60))
+            Sub[1]+=60*(2+(Sub[1]//60))
+        if(Sub[0]<0):
+            Sub=[0,0,0,0]
+            print('\n\033[1m\033[94m','[',self.Name,']: ',self.endmsg,'\033[0m')
             self.On = False
-            print('[',self.Name,']','Timer Complete!          ')
-        else:
-            return
+        return Sub
 
-    def Start(self):
+    def AddTime(self,Time1,Time2):
+        Add = [Time1[0]+Time2[0],Time1[1]+Time2[1],Time1[2]+Time2[2],Time1[3]+Time2[3]]
+        if(Add[3]>1000000):
+            Add[3]=Add[3]%1000000
+            Add[2]=Add[2]+(Add[3]//1000000)
+        if(Add[2]>60):
+            Add[2]=Add[2]%60
+            Add[1]=Add[1]+(Add[1]//60)
+        if(Add[1]>60):
+            Add[1]=Add[1]%60
+            Add[0]=Add[0]+(Add[0]//60)
+        if(Add[0]>23):
+            Add[0]=Add[0]%24
+        return Add
+
+    def Activate(self):
         self.On = True
         self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
-        self.CalcFinish()
+        self.Finish = self.AddTime(self.Time,self.Length)
 
     def Pause(self):
         self.Length=self.Diff
         self.On = False
 
     def Reset(self):
+        self.Name = 'Timer'
         self.On = False #state of timer object
-        self.Complete = False #completion state
         self.Start = [0,0,0,0] #[hour,minute,second,microseconds] When timer starts
         self.Diff = [0,0,0,0] #[hour,minute,second,microseconds] time until finish
         self.Length = [0,0,0,0] #[hour,minute,second,microseconds] length of timer
         self.cReset = False
         self.cPause = False
         self.cStart = False
+        self.Show = True
         return
 
     def __del__(self):
-        print('[',self.Name,']: ','Deleting Timer')
+        print('\n\033[1m\033[91m','[',self.Name,']: ',self.killmsg,'\033[0m')
         return
     
     
