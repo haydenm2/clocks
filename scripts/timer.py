@@ -1,10 +1,9 @@
 # This class instantiates an alarm object that can be set, named, checked, and destroyed.
-# from __future__ import print_function
-import sys
-from datetime import time, datetime
+from datetime import datetime
 import time as t
+from feature import Feature
 
-class Timer:
+class Timer(Feature):
     # Initialization function
     def __init__(self):
         self.Name = 'Timer' #timer name
@@ -13,6 +12,7 @@ class Timer:
         self.Diff = [0,0,0,0] #[hour,minute,second,microseconds] time until finish
         self.Finish = [0,0,0,0] #[hour,minute,second,microseconds] time of finish
         self.Length = [0,0,0,0] #[hour,minute,second,microseconds] length of timer
+        self.PrintTime = [0,0,0,0] #[hour,minute,second,microseconds]
         self.cReset = False #reset command flag
         self.cPause = False #pause command flag
         self.cStart = True #start command flag
@@ -23,37 +23,13 @@ class Timer:
         self.endmsg = "Timer Passed"
         self.killmsg = "Deleting Timer"
 
-    #Setter Functions
-    def SetName(self,name):
-        self.Name = name
-
-    def SetShow(self):
-        if(not(self.Show)):
-            self.Show = True
-        else:
-            self.Show = False
-    
     def SetValue(self,Value):
         self.Length = Value
-
-    #Execution Functions
-    def Execute(self):
-        while(not(self.cDest)):
-            if(self.On):
-                self.CheckFlags()
-                if(self.Show):
-                    self.Print(self.preprintmsg+self.Name,self.Diff)
-                self.Update()
-            else:
-                self.CheckFlags()
             
     def Update(self):
         self.Time = [datetime.now().hour,datetime.now().minute,datetime.now().second,datetime.now().microsecond]
         self.Diff = self.SubTime(self.Finish,self.Time)
-
-    def Print(self,Name,Time):
-        print('\033[1m\033[92m','[',Name,']: ','\033[0m',Time[0],':',Time[1],':',Time[2],':',Time[3],end='\r')
-        sys.stdout.flush()
+        self.PrintTime = self.Diff
 
     def CheckFlags(self):
         if(self.cPause):
@@ -66,23 +42,6 @@ class Timer:
             self.Activate()
             self.cStart = False
         t.sleep(self.ShowInt)
-
-    def SubTime(self,Time1,Time2):
-        Sub = [Time1[0]-Time2[0],Time1[1]-Time2[1],Time1[2]-Time2[2],Time1[3]-Time2[3]]
-        if(Sub[3]<0):
-            Sub[2]-=1
-            Sub[3]+=1000000
-        if(Sub[2]<0):
-            Sub[1]-=(2+(Sub[2]//60))
-            Sub[2]+=60*(2+(Sub[2]//60))
-        if(Sub[1]<0):
-            Sub[0]-=(2+(Sub[1]//60))
-            Sub[1]+=60*(2+(Sub[1]//60))
-        if(Sub[0]<0):
-            Sub=[0,0,0,0]
-            print('\n\033[1m\033[94m','[',self.Name,']: ',self.endmsg,'\033[0m')
-            self.On = False
-        return Sub
 
     def AddTime(self,Time1,Time2):
         Add = [Time1[0]+Time2[0],Time1[1]+Time2[1],Time1[2]+Time2[2],Time1[3]+Time2[3]]
@@ -107,21 +66,4 @@ class Timer:
     def Pause(self):
         self.Length=self.Diff
         self.On = False
-
-    def Reset(self):
-        self.Name = 'Timer'
-        self.On = False #state of timer object
-        self.Start = [0,0,0,0] #[hour,minute,second,microseconds] When timer starts
-        self.Diff = [0,0,0,0] #[hour,minute,second,microseconds] time until finish
-        self.Length = [0,0,0,0] #[hour,minute,second,microseconds] length of timer
-        self.cReset = False
-        self.cPause = False
-        self.cStart = False
-        self.Show = True
-        return
-
-    def __del__(self):
-        print('\n\033[1m\033[91m','[',self.Name,']: ',self.killmsg,'\033[0m')
-        return
-    
     

@@ -3,12 +3,12 @@ from clock import Clock
 from timer import Timer
 from stopwatch import Stopwatch
 
-# # ALARM TESTS
-# al = Alarm()
-# al.SetName('TestAlarm')
-# al.SetValue([21,15,0,0])
-# al.Activate()
-# al.Execute()
+# ALARM TESTS
+al = Alarm()
+al.SetName('TestAlarm')
+al.SetValue([21,15,0,0])
+al.Activate()
+al.Execute()
 
 # # TIMER TESTS
 # tmr = Timer()
@@ -20,15 +20,14 @@ from stopwatch import Stopwatch
 # # STOPWATCH TESTS
 # sw = Stopwatch()
 # sw.SetName('TestStopwatch')
-# sw.SetValue([0,0,5,0])
 # sw.Activate()
 # sw.Execute()
 
-# CLOCK TESTS
-cl = Clock()
-cl.SetName('TestClock')
-cl.SetValue([0,0,5,0])
-cl.Activate()
-cl.Execute()
+# # CLOCK TESTS
+# cl = Clock()
+# cl.SetName('TestClock')
+# cl.SetValue([0,0,5,0])
+# cl.Activate()
+# cl.Execute()
 
-print('TEST COMPLETE!')
+print('\033[1m\033[92m','-----TEST COMPLETE-----','\033[0m')
