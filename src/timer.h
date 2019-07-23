@@ -46,27 +46,6 @@ void Timer::Update()
     PrintTime = Diff;
 }
 
-//Check for Start, Pause, and Reset Commands
-void Timer::CheckFlags()
-{
-    if(cPause)
-    {
-        Pause();
-        cPause = false;
-    }
-    if(cReset)
-    {
-        Reset();
-        cReset = false;
-    }
-    if(cStart)
-    {
-        Activate();
-        cStart = false;
-    }
-    usleep(t_Update);
-}
-
 //Add Two Time Arrays
 Timer::s_time Timer::AddTime(s_time Time1, s_time Time2)
 {

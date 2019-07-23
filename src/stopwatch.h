@@ -42,33 +42,7 @@ void Stopwatch::Update()
     PrintTime = Elapsed;
 }
 
-//Check for Lap, Start, Pause, and Reset Commands
-void Stopwatch::CheckFlags()
-{
-    if(cLap)
-    {
-        Lap();
-        cLap = false;
-    }
-    if(cPause)
-    {
-        Pause();
-        cPause = false;
-    }
-    if(cReset)
-    {
-        Reset();
-        cReset = false;
-    }
-    if(cStart)
-    {
-        Activate();
-        cStart = false;
-    }
-    usleep(t_Update);
-}
-
-//#Turn on Stopwatch and Initialize Offset Start Time
+//Turn on Stopwatch and Initialize Offset Start Time
 void Stopwatch::Activate()
 {
     On = true;

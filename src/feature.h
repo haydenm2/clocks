@@ -21,6 +21,8 @@ class Feature {
         bool cDest;
         bool cStart;
         bool cReset;
+        bool cLap;
+        bool cPause;
         bool On;
         string preprintmsg;
         s_time PrintTime;
@@ -29,17 +31,20 @@ class Feature {
         string killmsg;
         Feature();
         ~Feature();
-        void GetSysTime(void);
+        void GetSysTime();
         void SetName(string name);
-        void SetShow(void);
+        void SetShow();
+        void SetHide();
         virtual void SetValue(s_time Value);
         void Execute();
         virtual void Update();
         void Print(string title,s_time Time);
         void CheckFlags();
         s_time SubTime(s_time Time1,s_time Time2);
-        void Activate(void);
-        void Reset(void);
+        void Pause();
+        void Lap();
+        void Activate();
+        void Reset();
 };
 
 Feature::Feature()
@@ -50,6 +55,8 @@ Feature::Feature()
     cDest = false;
     cStart = false;
     cReset = false;
+    cLap = false;
+    cPause = false;
     On = false;
     preprintmsg = "";
     PrintTime = {0,0,0};
@@ -65,7 +72,7 @@ Feature::~Feature()
 
 
 // store time from system clock
-void Feature::GetSysTime(void)
+void Feature::GetSysTime()
 {
     now = time(0);
     ltm = localtime(&now);
@@ -80,17 +87,16 @@ void Feature::SetName(string name)
     Name = name;
 }
 
-//Toggle Print Output
-void Feature::SetShow(void)
+//Show Print Output
+void Feature::SetShow()
 {
-    if(!Show)
-    {
-        Show = true;
-    }
-    else
-    {
-        Show = false;
-    }
+    Show = true;
+}
+
+//Hide Print Output
+void Feature::SetHide()
+{
+    Show = false;
 }
 
 //Set Feature Value (if applicable)
@@ -134,6 +140,16 @@ void Feature::Print(string title,s_time Time)
 //Check for Interrupt Flags
 void Feature::CheckFlags()
 {
+    if(cLap)
+    {
+        Lap();
+        cLap = false;
+    }
+    if(cPause)
+    {
+        Pause();
+        cPause = false;
+    }
     if(cReset)
     {
         Reset();
@@ -169,6 +185,14 @@ Feature::s_time Feature::SubTime(s_time Time1,s_time Time2)
     }
     return Sub;
 }
+
+//Pause Feature
+void Feature::Pause()
+{}
+
+//Record Feature Lap
+void Feature::Lap()
+{}
 
 //Activate Feature
 void Feature::Activate(void)
