@@ -28,8 +28,6 @@ Stopwatch::Stopwatch()
     Name = "Stopwatch";
     Start = {0,0,0};
     Elapsed = {0,0,0};
-    cPause = false;
-    cLap = false;
     killmsg = "Deleting Stopwatch";
     lap_iter = 0;
 }

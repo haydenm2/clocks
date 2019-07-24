@@ -12,7 +12,6 @@ class Timer : public Feature
         s_time Diff;
         s_time Finish;
         s_time Length;
-        bool cPause;
         void SetValue(s_time Value);
         void Update();
         void CheckFlags();

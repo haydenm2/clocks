@@ -12,105 +12,142 @@ using namespace std;
 
 class Interface {
     public:
-        struct s_time{
-            int hour;
-            int min;
-            int sec;
-            int msec;
-        };
         Interface();
         ~Interface();
-        s_time TimeInput;
-        string StringInput;
-        void CreateFeature(Feature::Feature); //create instance
+        Alarm *ptrAlarm;
+        Clock *ptrClock;
+        Stopwatch *ptrStopwatch;
+        Timer *ptrTimer; 
         void SetFeatureName(string name); //set name of feature
-        void SetFeatureValue(s_time Value); //set value of feature
-        void StartFeature(Feature::Feature); //Turn on feature
-        void PauseFeature(Feature::Feature); //Pause feature
-        void LapFeature(Feature::Feature); //Record feature lap
-        void StopFeature(Feature::Feature); //Turn off feature
-        void ShowFeature(Feature::Feature); //Toggle feature display on
-        void HideFeature(Feature::Feature); //Toggle feature display off
-        void ResetFeature(Feature::Feature); //Reset feature properties
+        void SetFeatureValue(Feature::s_time Value); //set value of feature
+        void StartFeature(); //Turn on feature
+        void PauseFeature(); //Pause feature
+        void LapFeature(); //Record feature lap
+        void StopFeature(); //Turn off feature
+        void ShowFeature(); //Toggle feature display on
+        void HideFeature(); //Toggle feature display off
+        void ResetFeature(); //Reset feature properties
+        void NextFeature(); //Iterate to next active feature
         void Execute(); //execution loop
     private:
-        void UpdateFeatures(); //Update feature values
+        void ExecuteFeatures(); //Update feature values
+        int iterFeature; //Feature iterator
+        Feature *CurrentFeature; //Feature target
 };
 
 Interface::Interface()
 {
-    TimeInput = {0,0,0};
-    StringInput = "";
+    static Alarm al;
+    static Clock cl;
+    static Stopwatch sw;
+    static Timer tmr;
+    ptrAlarm = &al;
+    ptrClock = &cl;
+    ptrStopwatch = &sw;
+    ptrTimer = &tmr;
+    iterFeature = 0;
+    CurrentFeature = ptrClock;
+    CurrentFeature->SetShow();
 }
 
 Interface::~Interface()
 {
-    cout << "\033[1m\033[91m[" << Name << "]: " << killmsg << "\033[0m" << endl;
-}
-
-
-void Interface::CreateFeature(Feature::Feature)
-{
-
+    cout << "\033[1m\033[91m[" << "Killing Interface" << "]\033[0m" << endl;
 }
 
 void Interface::SetFeatureName(string name)
 {
+    CurrentFeature->SetName(name);
+}
 
+void Interface::SetFeatureValue(Feature::s_time Value)
+{
+    CurrentFeature->SetValue(Value);
+}
+
+void Interface::StartFeature()
+{
+    CurrentFeature->cStart=true;
 }
 
 
-void Interface::SetFeatureValue(Interface::s_time Value)
+void Interface::PauseFeature()
 {
-
+    CurrentFeature->cPause=true;
 }
 
 
-void Interface::StartFeature(Feature::Feature)
+void Interface::LapFeature()
 {
-
+    CurrentFeature->cLap=true;
 }
 
 
-void Interface::PauseFeature(Feature::Feature)
+void Interface::StopFeature()
 {
-
+    CurrentFeature->Deactivate();
 }
 
 
-void Interface::LapFeature(Feature::Feature)
+void Interface::ShowFeature()
 {
-
+    CurrentFeature->SetShow();
 }
 
 
-void Interface::StopFeature(Feature::Feature)
+void Interface::HideFeature()
 {
-
+    CurrentFeature->SetHide();
 }
 
-
-void Interface::ShowFeature(Feature::Feature)
+void Interface::ResetFeature()
 {
-
+    CurrentFeature->cReset = true;
 }
 
-
-void Interface::HideFeature(Feature::Feature)
+void Interface::NextFeature()
 {
-
+    if(iterFeature == 0)
+    {
+        CurrentFeature->SetHide();
+        CurrentFeature = ptrAlarm;
+        CurrentFeature->SetShow();
+        iterFeature = 1;
+    }
+    else if(iterFeature == 1)
+    {
+        CurrentFeature->SetHide();
+        CurrentFeature = ptrStopwatch;
+        CurrentFeature->SetShow();
+        iterFeature = 2;
+    }
+    else if(iterFeature == 2)
+    {
+        CurrentFeature->SetHide();
+        CurrentFeature = ptrTimer;
+        CurrentFeature->SetShow();
+        iterFeature = 3;
+    }
+    else if(iterFeature == 3)
+    {
+        CurrentFeature->SetHide();
+        CurrentFeature = ptrClock;
+        CurrentFeature->SetShow();
+        iterFeature = 0;
+    }
 }
 
-
-void Interface::ResetFeature(Feature::Feature)
+void Interface::ExecuteFeatures()
 {
-
+    ptrClock->Execute();
+    ptrAlarm->Execute();
+    ptrStopwatch->Execute();
+    ptrTimer->Execute();
 }
 
-
-void Interface::UpdateFeatures()
+void Interface::Execute()
 {
-
+    ExecuteFeatures();
 }
 
 

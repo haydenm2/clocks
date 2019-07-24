@@ -44,6 +44,7 @@ class Feature {
         void Pause();
         void Lap();
         void Activate();
+        void Deactivate();
         void Reset();
 };
 
@@ -105,7 +106,7 @@ void Feature::SetValue(s_time Value){}
 //Execution Loop
 void Feature::Execute()
 {
-    while(!cDest)
+    if(!cDest) //set to while loop for individual feature tests
     {
         if(On)
         {
@@ -133,7 +134,7 @@ void Feature::Update()
 //Print Output
 void Feature::Print(string title,s_time Time)
 {
-    cout << "\033[1m\033[92m[" << title << "]: \033[0m" << Time.hour << ':' << Time.min << ':' << Time.sec << "\r";
+    cout << "\033[1m\033[92m[" << title << "]: \033[0m" << Time.hour << ':' << Time.min << ':' << Time.sec << "                          \r";
     cout.flush();
 }
 
@@ -180,7 +181,7 @@ Feature::s_time Feature::SubTime(s_time Time1,s_time Time2)
     if(Sub.hour<0)
     {
         Sub={0,0,0};
-        cout << "\n\033[1m\033[94m[" << Name << "]: " << endmsg << "\033[0m" << endl;
+        cout << "\n\033[1m\033[94m[" << Name << "]: " << endmsg << "\033[0m             " << endl;
         On = false;
     }
     return Sub;
@@ -199,6 +200,12 @@ void Feature::Activate(void)
 {
     On = true;
     GetSysTime();
+}
+
+//Deactivate Feature
+void Feature::Deactivate(void)
+{
+    On = false;
 }
 
 //Reset Feature

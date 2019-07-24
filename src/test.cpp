@@ -6,16 +6,71 @@
 #include "clock.h"
 #include "timer.h"
 #include "stopwatch.h"
+#include "interface.h"
 using namespace std;
 
 //ALARM TESTS
 int main()
 {
-    Feature feat;
-    feat.SetName("TestFeature");
-    feat.Activate();
-    feat.Execute();
+    // INTERFACE TESTS
+    Feature::s_time t_pass = {23,59,0}; //9:15pm
+    Interface inter;
+    inter.SetFeatureName("TestClock");
+    inter.SetFeatureValue(t_pass);
+    inter.StartFeature();
+    for(int i = 0; i<20; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    inter.SetFeatureName("TestAlarm");
+    inter.SetFeatureValue(t_pass);
+    inter.StartFeature();
+    for(int i = 0; i<20; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    inter.SetFeatureName("TestStopwatch");
+    Feature::s_time t_time = {0,2,3};
+    inter.SetFeatureValue(t_time);
+    inter.StartFeature();
+    inter.SetFeatureValue(t_time);
+    for(int i = 0; i<20; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    inter.SetFeatureName("TestTimer");
+    inter.SetFeatureValue(t_time);
+    inter.StartFeature();
+    for(int i = 0; i<30; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    for(int i = 0; i<10; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    for(int i = 0; i<10; i++)
+    {
+        inter.Execute();
+    }
+    inter.NextFeature();
+    for(int i = 0; i<10; i++)
+    {
+        inter.Execute();
+    }
+    
+    // // FEATURE TESTS
+    // Feature feat;
+    // feat.SetName("TestFeature");
+    // feat.Activate();
+    // feat.Execute();
 
+    // // ALARM TESTS
     // Alarm al;
     // al.SetName("TestAlarm");
     // Feature::s_time t_pass = {21,15,0}; //9:15pm
@@ -45,6 +100,6 @@ int main()
     // sw.Activate();
     // sw.Execute();
 
-    cout << "\033[1;92m-----TEST COMPLETE-----\033[0m" << endl;
+    cout << "\033[1;92m-----TEST COMPLETE-----\033[0m            " << endl;
     return 0;
 }

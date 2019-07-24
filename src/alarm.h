@@ -7,17 +7,17 @@ using namespace std;
 
 class Alarm : public Feature {
     public:
+        Alarm();
         s_time Finish;
         s_time Diff;
         void SetValue(s_time);
         void Update();
-        Alarm();
 };
 
 Alarm::Alarm()
 {
     Name = "Alarm";
-    Finish = {0,0,0,0}; 
+    Finish = {23,59,59,0}; 
     Diff = {0,0,0,0}; 
     preprintmsg = "Time to "; 
     endmsg = "Alarm Passed"; 
