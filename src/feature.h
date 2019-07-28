@@ -41,9 +41,10 @@ class Feature {
         void Print(string title,s_time Time);
         void CheckFlags();
         s_time SubTime(s_time Time1,s_time Time2);
-        void Pause();
-        void Lap();
-        void Activate();
+        s_time AddTime(s_time Time1,s_time Time2);
+        virtual void Pause();
+        virtual void Lap();
+        virtual void Activate();
         void Deactivate();
         void Reset();
 };
@@ -111,11 +112,11 @@ void Feature::Execute()
         if(On)
         {
             CheckFlags();
+            Update();
             if(Show)
             {
                 Print(preprintmsg+Name,PrintTime);
             }
-            Update();
         }
         else
         {
@@ -187,6 +188,9 @@ Feature::s_time Feature::SubTime(s_time Time1,s_time Time2)
     return Sub;
 }
 
+Feature::s_time Feature::AddTime(s_time Time1,s_time Time2)
+{}
+
 //Pause Feature
 void Feature::Pause()
 {}
@@ -198,8 +202,8 @@ void Feature::Lap()
 //Activate Feature
 void Feature::Activate(void)
 {
-    On = true;
     GetSysTime();
+    On = true;
 }
 
 //Deactivate Feature

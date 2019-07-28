@@ -35,7 +35,6 @@ int main()
     Feature::s_time t_time = {0,2,3};
     inter.SetFeatureValue(t_time);
     inter.StartFeature();
-    inter.SetFeatureValue(t_time);
     for(int i = 0; i<20; i++)
     {
         inter.Execute();
@@ -44,7 +43,7 @@ int main()
     inter.SetFeatureName("TestTimer");
     inter.SetFeatureValue(t_time);
     inter.StartFeature();
-    for(int i = 0; i<30; i++)
+    for(int i = 0; i<20; i++)
     {
         inter.Execute();
     }

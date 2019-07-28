@@ -26,7 +26,6 @@ Timer::Timer()
     Diff = {0,0,0};
     Finish = {0,0,0};
     Length = {0,0,0};
-    cPause = false;
     endmsg = "Timer Passed";
     killmsg = "Deleting Timer";
 }

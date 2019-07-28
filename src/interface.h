@@ -110,6 +110,7 @@ void Interface::NextFeature()
     if(iterFeature == 0)
     {
         CurrentFeature->SetHide();
+        // Alarm *CurrentFeature = static_cast <Alarm *> (CurrentFeature);
         CurrentFeature = ptrAlarm;
         CurrentFeature->SetShow();
         iterFeature = 1;
@@ -117,6 +118,7 @@ void Interface::NextFeature()
     else if(iterFeature == 1)
     {
         CurrentFeature->SetHide();
+        // Stopwatch *CurrentFeature = static_cast <Stopwatch *> (CurrentFeature);
         CurrentFeature = ptrStopwatch;
         CurrentFeature->SetShow();
         iterFeature = 2;
@@ -124,6 +126,7 @@ void Interface::NextFeature()
     else if(iterFeature == 2)
     {
         CurrentFeature->SetHide();
+        // Timer *CurrentFeature = static_cast <Timer *> (CurrentFeature);
         CurrentFeature = ptrTimer;
         CurrentFeature->SetShow();
         iterFeature = 3;
@@ -131,6 +134,7 @@ void Interface::NextFeature()
     else if(iterFeature == 3)
     {
         CurrentFeature->SetHide();
+        // Clock *CurrentFeature = static_cast <Clock *> (CurrentFeature);
         CurrentFeature = ptrClock;
         CurrentFeature->SetShow();
         iterFeature = 0;
